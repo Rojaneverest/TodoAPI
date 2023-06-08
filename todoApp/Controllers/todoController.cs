@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Security.AccessControl;
+using System.Security.Claims;
 using todoApp.Data;
 using todoApp.Models;
 
@@ -16,36 +21,70 @@ namespace todoApp.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public ActionResult<IEnumerable<todoModel> >GetTodo()
-        {
-            return Ok(_context.Todos.ToList());
-        }
+        //[HttpGet("todos")]
+        //public ActionResult<IEnumerable<todoModel>> GetUserTodos()
+        //{
+        //    var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    if (string.IsNullOrEmpty(userIdClaim))
+        //    {
+        //        return BadRequest("Invalid user ID.");
+        //    }
+
+        //    if (!int.TryParse(userIdClaim, out int userId))
+        //    {
+        //        return BadRequest("Invalid user ID format.");
+        //    }
+
+        //    var userTodos = _context.Todos.Where(t => t.UserId == userId).ToList();
+
+        //    return Ok(userTodos);
+        //}
+
 
         [HttpPost]
-        public ActionResult<todoModel> CreateTodo([FromBody]todoModel todos)
+        [Authorize]
+        public ActionResult<todoModel> CreateTodo([FromBody] todoModel todos)
         {
-            //if(!modelstate.isvalid)
-            //{
-            //    return badrequest(modelstate);
-            //}
-            if (_context.Todos.FirstOrDefault(u => u.Title.ToLower() == todos.Title.ToLower())!=null)
+            var username = User.FindFirstValue(ClaimTypes.Name);
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Invalid username.");
+            }
+
+            if (_context.Todos.FirstOrDefault(u => u.Title.ToLower() == todos.Title.ToLower()) != null)
             {
                 ModelState.AddModelError("Custom Error", "Title Already Exists");
             }
-            if (todos == null)
+
+            if (!ModelState.IsValid)
             {
-                return BadRequest(todos);
+                return BadRequest(ModelState);
             }
+
             if (todos.Id > 0)
             {
                 return BadRequest(todos);
             }
-            
+
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            todos.Id = user.Id;
+
             _context.Todos.Add(todos);
             _context.SaveChanges();
+
             return Ok(todos);
         }
+
+
+
 
         [HttpDelete("{id:int}")]
         public ActionResult DeleteTodo(int id)
@@ -54,7 +93,7 @@ namespace todoApp.Controllers
             {
                 return BadRequest();
             }
-            var todo= _context.Todos.FirstOrDefault(x => x.Id == id);
+            var todo = _context.Todos.FirstOrDefault(x => x.Id == id);
             if (todo != null)
             {
                 _context.Todos.Remove(todo);
@@ -65,7 +104,7 @@ namespace todoApp.Controllers
                 return NotFound();
             }
             return NoContent();
-        } 
+        }
 
     }
 }

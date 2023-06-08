@@ -9,9 +9,11 @@ namespace todoApp.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public string Title{ get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
 
-        public DateTime DateTime { get; set; }= DateTime.Now;
+
+        public DateTime DateTime { get; set; } = DateTime.Now;
+
     }
 }
