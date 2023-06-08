@@ -43,6 +43,27 @@ namespace todoApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("todoApp.Models.UserDTO", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("DTOUsers");
+                });
+
             modelBuilder.Entity("todoApp.Models.todoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -61,6 +82,9 @@ namespace todoApp.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

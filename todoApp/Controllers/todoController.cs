@@ -21,25 +21,29 @@ namespace todoApp.Controllers
         {
             _context = context;
         }
-        //[HttpGet("todos")]
-        //public ActionResult<IEnumerable<todoModel>> GetUserTodos()
-        //{
-        //    var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        [HttpGet("todos")]
+        [Authorize]
+        public ActionResult<IEnumerable<todoModel>> GetUserTodos()
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
 
-        //    if (string.IsNullOrEmpty(userIdClaim))
-        //    {
-        //        return BadRequest("Invalid user ID.");
-        //    }
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Invalid username.");
+            }
 
-        //    if (!int.TryParse(userIdClaim, out int userId))
-        //    {
-        //        return BadRequest("Invalid user ID format.");
-        //    }
+            var user = _context.DTOUsers.FirstOrDefault(u => u.Username == username);
 
-        //    var userTodos = _context.Todos.Where(t => t.UserId == userId).ToList();
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
 
-        //    return Ok(userTodos);
-        //}
+            var userTodos = _context.Todos.Where(t => t.UserId == user.UserId).ToList();
+
+            return Ok(userTodos);
+        }
+
 
 
         [HttpPost]
@@ -68,14 +72,14 @@ namespace todoApp.Controllers
                 return BadRequest(todos);
             }
 
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
+            var user = _context.DTOUsers.FirstOrDefault(u => u.Username == username);
 
             if (user == null)
             {
                 return BadRequest("User not found.");
             }
 
-            todos.Id = user.Id;
+            todos.UserId = user.UserId;
 
             _context.Todos.Add(todos);
             _context.SaveChanges();

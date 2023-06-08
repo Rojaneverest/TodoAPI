@@ -16,7 +16,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => { option.UseSqlSer
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -45,9 +44,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-var config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .Build();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(options =>
            {
@@ -57,9 +54,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                    ValidateAudience = true,
                    ValidateLifetime = true,
                    ValidateIssuerSigningKey = true,
-                   ValidIssuer = config["Jwt:Issuer"],
-                   ValidAudience = config["Jwt:Audience"],
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+                   ValidIssuer = "https://localhost:7216",
+                   ValidAudience = "https://localhost:7216",
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4"))
                };
            });
 var app = builder.Build();

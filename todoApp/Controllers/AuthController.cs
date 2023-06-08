@@ -27,10 +27,10 @@ namespace todoApp.Controllers
         private readonly IUserService _UserService;
 
 
-        public AuthController(ApplicationDbContext dbContext, IUserService UserService, IConfiguration configuration)
+        public AuthController(ApplicationDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
-            _UserService = UserService;
+          
             _configuration = configuration;
 
         }
@@ -62,14 +62,17 @@ namespace todoApp.Controllers
             };
 
             _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+           
+           
 
             var userDto = new UserDTO
             {
-                Username = user.Username,
-                Password = user.PasswordHash
-            };
+                Username=request.Username,
+                Password=request.Password,
 
+            };
+            _dbContext.DTOUsers.Add(userDto);
+            _dbContext.SaveChanges();
             return Ok(userDto);
         }
 
@@ -105,24 +108,24 @@ namespace todoApp.Controllers
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, User.Username),
-                new Claim(ClaimTypes.Role, "Admin"),
-                new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.NameIdentifier, User.UserId.ToString())
+
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("Jwt:Key").Value!));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
+            var token = new JwtSecurityToken(_configuration["jwt:Issuer"],
+                _configuration["jwt:Audience"],
                     claims: claims,
                     expires: DateTime.Now.AddDays(1),
                     signingCredentials: creds
                 );
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
 
-            return jwt;
         }
     }
 }
