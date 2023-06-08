@@ -12,8 +12,8 @@ using todoApp.Data;
 namespace todoApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230608045231_TodayCreated")]
-    partial class TodayCreated
+    [Migration("20230608060157_InitialCrete")]
+    partial class InitialCrete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace todoApp.Migrations
 {
     /// <inheritdoc />
-    public partial class SecondCreated : Migration
+    public partial class InitialCrete : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
