@@ -1,25 +1,26 @@
 ﻿<Properties StartupConfiguration="{645825C7-22C6-49CC-9236-9C84600AF239}|https">
-  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.todoApp PreferredExecutionTarget="/Applications/Google Chrome.app" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="todoApp/Migrations/20230607065257_SecondCreated.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="todoApp/Controllers/todoController.cs">
     <Files>
-      <File FileName="todoApp/Program.cs" Line="32" Column="1" />
-      <File FileName="todoApp/Data/ApplicationDbContext.cs" Line="7" Column="6" />
-      <File FileName="todoApp/Models/User.cs" Line="14" Column="45" />
-      <File FileName="todoApp/Controllers/AuthController.cs" Line="63" Column="1" />
-      <File FileName="todoApp/Controllers/todoController.cs" Line="73" Column="1" />
-      <File FileName="todoApp/Models/todoModel.cs" Line="14" Column="1" />
-      <File FileName="todoApp/Models/UserDTO.cs" Line="7" Column="6" />
-      <File FileName="todoApp/Migrations/20230607065257_SecondCreated.cs" Line="7" Column="2" />
+      <File FileName="todoApp/Data/ApplicationDbContext.cs" Line="11" Column="23" />
+      <File FileName="todoApp/Models/User.cs" Line="17" Column="1" />
+      <File FileName="todoApp/Models/todoModel.cs" Line="9" Column="24" />
+      <File FileName="todoApp/Models/LoginDTO.cs" Line="10" Column="36" />
+      <File FileName="todoApp/Models/RegisterDTO.cs" Line="10" Column="9" />
+      <File FileName="todoApp/Controllers/AuthController.cs" Line="137" Column="1" />
+      <File FileName="todoApp/Controllers/todoController.cs" Line="133" Column="1" />
+      <File FileName="todoApp/Models/UserInfoDTO.cs" Line="11" Column="31" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="todoApp" expanded="True">
             <Node name="todoApp" expanded="True">
-              <Node name="Controllers" expanded="True" />
+              <Node name="Controllers" expanded="True">
+                <Node name="todoController.cs" selected="True" />
+              </Node>
               <Node name="Data" expanded="True" />
-              <Node name="Migrations" expanded="True" />
               <Node name="Models" expanded="True" />
               <Node name="Services" expanded="True" />
             </Node>
@@ -28,9 +29,9 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
 </Properties>

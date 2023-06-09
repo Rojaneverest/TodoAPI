@@ -30,7 +30,7 @@ namespace todoApp.Controllers
         public AuthController(ApplicationDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
-          
+
             _configuration = configuration;
 
         }
@@ -51,36 +51,27 @@ namespace todoApp.Controllers
         //}
 
         [HttpPost("register")]
-        public ActionResult<UserDTO> Register(UserDTO request)
+        public ActionResult<RegisterDTO> Register(RegisterDTO request)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             var user = new User
             {
                 Username = request.Username,
-                PasswordHash = passwordHash
+                PasswordHash = passwordHash,
+                Address = request.Address,
+                Phonenumber = request.Phonenumber
             };
-
             _dbContext.Users.Add(user);
-           
-           
-
-            var userDto = new UserDTO
-            {
-                Username=request.Username,
-                Password=request.Password,
-
-            };
-            _dbContext.DTOUsers.Add(userDto);
             _dbContext.SaveChanges();
-            return Ok(userDto);
+            return Ok(user);
         }
 
         [HttpPost("login")]
-        public ActionResult<string> Login(UserDTO request)
+        public ActionResult<string> Login(LoginDTO request)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Username == request.Username);
-
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             if (user == null)
             {
                 return BadRequest("User not found.");
@@ -91,23 +82,24 @@ namespace todoApp.Controllers
                 return BadRequest("Wrong password.");
             }
 
-            var userDto = new UserDTO
+            var loginuser = new User
             {
-                Username = user.Username,
-                Password = user.PasswordHash
+                Username = request.Username,
+                PasswordHash = passwordHash
             };
 
-            string token = CreateToken(userDto);
+            string token = CreateToken(loginuser);
 
             return Ok(token);
         }
 
 
 
-        private string CreateToken(UserDTO User)
+        private string CreateToken(User User)
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, User.Username),
+
                 new Claim(ClaimTypes.NameIdentifier, User.UserId.ToString())
 
             };
@@ -127,5 +119,21 @@ namespace todoApp.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
+        [HttpGet("{id}")]
+        public ActionResult<UserInfoDTO> GetUserById(int id)
+        {
+            var x = _dbContext.Users.FirstOrDefault(o => o.UserId == id);
+            var UserInfo = new UserInfoDTO
+            {
+                UserId = id,
+                Username = x.Username,
+                Phonenumber = x.Phonenumber,
+                Address = x.Address
+            };
+            return Ok(UserInfo);
+        }
+
+
     }
+
 }
