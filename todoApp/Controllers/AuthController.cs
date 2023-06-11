@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -13,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using todoApp.Data;
 using todoApp.Models;
-using todoApp.Services;
+
 
 namespace todoApp.Controllers
 {
@@ -24,7 +25,7 @@ namespace todoApp.Controllers
 
         private ApplicationDbContext _dbContext;
         private readonly IConfiguration _configuration;
-        private readonly IUserService _UserService;
+       
 
 
         public AuthController(ApplicationDbContext dbContext, IConfiguration configuration)
@@ -99,8 +100,7 @@ namespace todoApp.Controllers
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, User.Username),
-
-                new Claim(ClaimTypes.NameIdentifier, User.UserId.ToString())
+               new Claim(ClaimTypes.Sid, User.UserId.ToString())
 
             };
 
@@ -119,18 +119,29 @@ namespace todoApp.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
-        [HttpGet("{id}")]
-        public ActionResult<UserInfoDTO> GetUserById(int id)
+        [HttpGet("GetAllUsers")]
+        public ActionResult<UserInfoDTO> GetAllUsers()
         {
-            var x = _dbContext.Users.FirstOrDefault(o => o.UserId == id);
-            var UserInfo = new UserInfoDTO
+            //var x = _dbContext.Users.FirstOrDefault(o => o.UserId == id);
+            //var UserInfo = new UserInfoDTO
+            //{
+            //    UserId = id,
+            //    Username = x.Username,
+            //    Phonenumber = x.Phonenumber,
+            //    Address = x.Address
+            //};
+            //return Ok(UserInfo);
+
+
+            var users = _dbContext.Users.Select(u => new UserInfoDTO
             {
-                UserId = id,
-                Username = x.Username,
-                Phonenumber = x.Phonenumber,
-                Address = x.Address
-            };
-            return Ok(UserInfo);
+                UserId = u.UserId,
+                Username = u.Username,
+                Phonenumber = u.Phonenumber,
+                Address = u.Address
+            }).ToList();
+            
+            return Ok(users);
         }
 
 
